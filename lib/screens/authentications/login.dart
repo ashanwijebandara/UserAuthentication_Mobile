@@ -5,7 +5,8 @@ import 'package:doctorapp/services/auth.dart';
 import 'package:flutter/material.dart';
 
 class SignIn extends StatefulWidget {
-  const SignIn({super.key});
+  final Function toggle;
+  const SignIn({super.key, required this.toggle});
 
   @override
   State<SignIn> createState() => _SignInState();
@@ -19,6 +20,7 @@ class _SignInState extends State<SignIn> {
   // email passsword state
   String email = "";
   String password = "";
+  String error = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,6 +61,7 @@ class _SignInState extends State<SignIn> {
                           height: 10,
                         ),
                         TextFormField(
+                          obscureText: true,
                           decoration: textInputDecoration.copyWith(
                               hintText: "password"),
                           validator: (val) =>
@@ -71,6 +74,10 @@ class _SignInState extends State<SignIn> {
                         ),
                         const SizedBox(
                           height: 10,
+                        ),
+                        Text(
+                          error,
+                          style: TextStyle(color: Colors.red, fontSize: 14),
                         ),
                         const Text(
                           "Login with Google",
@@ -102,7 +109,9 @@ class _SignInState extends State<SignIn> {
                             ),
                             GestureDetector(
                               // goto register page
-                              onTap: () {},
+                              onTap: () {
+                                widget.toggle();
+                              },
                               child: Text('Register',
                                   style: TextStyle(
                                     color: Colors.blue,
@@ -117,7 +126,16 @@ class _SignInState extends State<SignIn> {
                         ),
                         GestureDetector(
                           //methord for login user
-                          onTap: () {},
+                          onTap: () async {
+                            dynamic result = await _auth
+                                .signInWithEmailAndPassword(email, password);
+                            if (result == null) {
+                              setState(() {
+                                error =
+                                    "could not sign in with those credentials";
+                              });
+                            }
+                          },
                           child: Container(
                               height: 40,
                               width: 200,
@@ -141,8 +159,10 @@ class _SignInState extends State<SignIn> {
                           height: 15,
                         ),
                         GestureDetector(
-                          //methord for login user
-                          onTap: () {},
+                          //methord for login user as annonymous
+                          onTap: () async {
+                            await _auth.signInAnon();
+                          },
                           child: Container(
                               height: 40,
                               width: 200,

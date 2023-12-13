@@ -5,7 +5,8 @@ import 'package:doctorapp/services/auth.dart';
 import 'package:flutter/material.dart';
 
 class Register extends StatefulWidget {
-  const Register({super.key});
+  final Function toggle;
+  const Register({super.key, required this.toggle});
 
   @override
   State<Register> createState() => _RegisterState();
@@ -18,6 +19,7 @@ class _RegisterState extends State<Register> {
   // email passsword state
   String email = "";
   String password = "";
+  String error = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,6 +73,10 @@ class _RegisterState extends State<Register> {
                       const SizedBox(
                         height: 10,
                       ),
+                      Text(
+                        error,
+                        style: TextStyle(color: Colors.red),
+                      ),
                       const Text(
                         "Login with Google",
                         style: descriptionStyle,
@@ -101,7 +107,9 @@ class _RegisterState extends State<Register> {
                           ),
                           GestureDetector(
                             // goto register page
-                            onTap: () {},
+                            onTap: () {
+                              widget.toggle();
+                            },
                             child: Text('Log In',
                                 style: TextStyle(
                                   color: Colors.blue,
@@ -116,7 +124,17 @@ class _RegisterState extends State<Register> {
                       ),
                       GestureDetector(
                         //methord for login user
-                        onTap: () {},
+                        onTap: () async {
+                          dynamic result =
+                              await _auth.registerWithEmailAndPassword(
+                                  email, password, "");
+
+                          if (result == null) {
+                            setState(() {
+                              error = "please supply a valid email";
+                            });
+                          }
+                        },
                         child: Container(
                             height: 40,
                             width: 200,

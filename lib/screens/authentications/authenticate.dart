@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:doctorapp/screens/authentications/login.dart';
 import 'package:doctorapp/screens/authentications/register.dart';
 
@@ -11,10 +13,20 @@ class Authenticate extends StatefulWidget {
 }
 
 class _AuthenticateState extends State<Authenticate> {
+
+  bool showSignIn = true;
+
+  void toggleView(){
+    setState(() {
+      showSignIn = !showSignIn;
+    });
+  }
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: SignIn(),
-    );
+    if(showSignIn){
+      return SignIn(toggle: toggleView);
+    }else{
+      return Register(toggle:toggleView);
+    }
   }
 }
